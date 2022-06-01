@@ -4,17 +4,8 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/GameController.java</file>
-            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/Item.java</file>
-            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/HealthPotion.java</file>
-            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/Eukrasian.java</file>
-            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/AdventureGear.java</file>
-            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/Enemy.java</file>
             <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/EdensVerse.java</file>
-            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/Adventurer.java</file>
-            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/BossEnemy.java</file>
-            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/entry_pt2.txt</file>
-            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/entry_pt1.txt</file>
-            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/charSave.txt</file>
+            <file>file:/C:/Users/Agirp/OneDrive/Documents/NetBeansProjects/EdensVerse/src/edensverse/EdensVerseUI.java</file>
         </group>
     </open-files>
 </project-private>

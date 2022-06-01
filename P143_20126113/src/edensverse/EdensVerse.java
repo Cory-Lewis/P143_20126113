@@ -23,8 +23,12 @@ public class EdensVerse {
      */
     public static void main(String[] args) throws IOException, FileNotFoundException, ClassNotFoundException 
     {
+        EdensVerseUI mainUI = new EdensVerseUI();
         GameController gameController = new GameController();
+        gameController.setUI(mainUI);
         Scanner scan = new Scanner(System.in);
+        
+        mainUI.setVisible(true);
         
         File characterSave = new File("./src/edensverse/charSave.txt");
         
@@ -79,24 +83,24 @@ public class EdensVerse {
             while(true);
         }
         
-        System.out.println(gameController.readFile("./src/edensverse/entry_pt1.txt"));
-        System.out.println("Press enter to continue...");
+        gameController.printToUI(gameController.readFile("./src/edensverse/entry_pt1.txt"));
+        gameController.printToUI("Press enter to continue...");
         scan.nextLine();
         
-        System.out.println(gameController.getPlayerCharacter().getName() + gameController.readFile("./src/edensverse/entry_pt2.txt"));
-        System.out.println("Press enter to continue...");
+        gameController.printToUI(gameController.getPlayerCharacter().getName() + gameController.readFile("./src/edensverse/entry_pt2.txt"));
+        gameController.printToUI("Press enter to continue...\n");
         scan.nextLine();
         
-        System.out.println(gameController.readFile("./src/edensverse/entry_pt3.txt"));
-        System.out.println("Press enter to continue...");
+        gameController.printToUI(gameController.readFile("./src/edensverse/entry_pt3.txt"));
+        gameController.printToUI("Press enter to continue...\n");
         scan.nextLine();
         
-        System.out.println("*System Notice*\nSkill Info:");
-        System.out.println("Slash - a basic attack with no cooldown");
-        System.out.println("Souleater - an attack that drains the HP of you enemies and gives it to you. 5 turn cooldown");
-        System.out.println("Lacerate - Inflicts enemies with a bleed debuff that does 5 damage each turn for 3 turns. 3 turn cooldown");
-        System.out.println("Potion - Uses a potion that restores 1/3rd of your max HP");
-        System.out.println("Quit - Saves your character info and quits the game\n");
+        gameController.printToUI("*System Notice*\nSkill Info:");
+        gameController.printToUI("Slash - a basic attack with no cooldown");
+        gameController.printToUI("Souleater - an attack that drains the HP of you enemies and gives it to you. 5 turn cooldown");
+        gameController.printToUI("Lacerate - Inflicts enemies with a bleed debuff that does 5 damage each turn for 3 turns. 3 turn cooldown");
+        gameController.printToUI("Potion - Uses a potion that restores 1/3rd of your max HP");
+        gameController.printToUI("Quit - Saves your character info and quits the game\n");
         
         gameController.createMonsters(4);
         gameController.battle(scan);

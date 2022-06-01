@@ -26,6 +26,7 @@ public class GameController
 {
     private Adventurer playerCharacter;
     public ArrayList<Enemy> enemyList = new ArrayList<>();
+    private EdensVerseUI mainUI;
     
     /**
      * @return the playerCharacter
@@ -35,6 +36,11 @@ public class GameController
         return playerCharacter;
     }
 
+    public void setUI(EdensVerseUI mainUI)
+    {
+        this.mainUI = mainUI;
+    }
+    
     /**
      * @param playerCharacter the playerCharacter to set
      */
@@ -60,6 +66,11 @@ public class GameController
         ObjectInputStream objIn = new ObjectInputStream(fileIn);
         this.playerCharacter = (Adventurer) objIn.readObject();
         System.out.println("Load successful!\n");
+    }
+    
+    public void printToUI(String str)
+    {
+        this.mainUI.uiPrint(str);
     }
     
     public String readFile(String filePath) throws FileNotFoundException, IOException
@@ -131,10 +142,12 @@ public class GameController
                 do
                 {
                     quitBool = false;
-                    userInput = scan.nextLine();
+                    
+                    while(mainUI.checkAction() == false)
+                    {}
                     
                     //check which option the user chose
-                    switch(userInput.toLowerCase())
+                    switch(mainUI.getAction().toLowerCase())
                     {
                         case "slash":
                             System.out.println("\n" + this.playerCharacter.getName() + " uses slash on the " + this.enemyList.get(i).getName());

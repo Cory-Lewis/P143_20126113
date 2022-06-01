@@ -4,13 +4,11 @@
  */
 package edensverse;
 import java.io.Serializable;
-import javax.lang.model.SourceVersion;
 
 /**
  *
  * @author Agirp
  */
-
 public class AdventureGear extends Item implements Serializable
 {
     private String name;

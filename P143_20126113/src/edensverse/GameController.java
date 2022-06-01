@@ -94,26 +94,29 @@ public class GameController
     }
     
     //use random numbers to generate a unique list of monsters
-    public void createMonsters(int numOfMonsters)
+    public void createMonsters()
     {
         Random rand = new Random();
         int monsterCode = 0;
         
-        for(int i = 0; i < numOfMonsters +1; i++)
+        if(this.playerCharacter.getEnemyCount() == 0)
         {
-            monsterCode = rand.nextInt(3);
-            
-            if (monsterCode == 0)
+            for(int i = 0; i < this.playerCharacter.getEnemyCount() +1; i++)
             {
-                enemyList.add(new Enemy("Coerl", 40, 10, 15));
-            }
-            else if (monsterCode == 1)
-            {
-                enemyList.add(new Enemy("Skeleton", 50, 15, 10));
-            }
-            else
-            {
-                enemyList.add(new Enemy("Giant Rat", 30, 14, 15));
+                monsterCode = rand.nextInt(3);
+
+                if (monsterCode == 0)
+                {
+                    enemyList.add(new Enemy("Coerl", 40, 10, 15));
+                }
+                else if (monsterCode == 1)
+                {
+                    enemyList.add(new Enemy("Skeleton", 50, 15, 10));
+                }
+                else
+                {
+                    enemyList.add(new Enemy("Giant Rat", 30, 14, 15));
+                }
             }
         }
     }
@@ -128,120 +131,125 @@ public class GameController
         int lacerateDamage = 5;
         int soulEaterCounter = 0;
         
-        for(int i = 0; i < this.enemyList.size(); i++)
+        if(this.enemyList.size() > 0)
         {
-            System.out.println("A " + this.enemyList.get(i).getName() + " approaches!");
-            lacerateDamage = 0;
-            
-            while(this.playerCharacter.getHealthPoints() > 0 && this.enemyList.get(i).getHealthPoints() > 0)
+            for(int i = 0; i < this.enemyList.size(); i++)
             {
-                System.out.println(this.playerCharacter.getName() + " HP: " + this.playerCharacter.getHealthPoints() + "                " + this.enemyList.get(i).getName() + " HP: " + this.enemyList.get(i).getHealthPoints());
-                System.out.println("Options:    Slash   |   Souleater   |   Lacerate   |   potion x" + this.playerCharacter.getInventory().size() + " |   Quit");
-                boolean quitBool;
-                
-                do
+                printToUI("A " + this.enemyList.get(i).getName() + " approaches!");
+                lacerateDamage = 0;
+
+                while(this.playerCharacter.getHealthPoints() > 0 && this.enemyList.get(i).getHealthPoints() > 0)
                 {
-                    quitBool = false;
-                    
-                    while(mainUI.checkAction() == false)
-                    {}
-                    
-                    //check which option the user chose
-                    switch(mainUI.getAction().toLowerCase())
+                    printToUI(this.playerCharacter.getName() + " HP: " + this.playerCharacter.getHealthPoints() + "                " + this.enemyList.get(i).getName() + " HP: " + this.enemyList.get(i).getHealthPoints());
+                    printToUI("Options:    Slash   |   Souleater   |   Lacerate   |   potion x" + this.playerCharacter.getInventory().size() + " |   Quit");
+                    boolean quitBool;
+
+                    do
                     {
-                        case "slash":
-                            System.out.println("\n" + this.playerCharacter.getName() + " uses slash on the " + this.enemyList.get(i).getName());
-                            this.playerCharacter.attack(this.enemyList.get(i));
-                            quitBool = true;
-                            break;
-                        
-                        case "souleater":
-                            if (soulEaterCounter == 0)
-                            {
-                                this.playerCharacter.soulEater(this.enemyList.get(i));
-                                //set the souleater cooldown to 5
-                                soulEaterCounter = 5;
-                                System.out.println("\nYou may use souleater in 5 turns\n");
+                        quitBool = false;
+                        mainUI.updatePotion(this.playerCharacter.getPotionCount());
+
+                        while(mainUI.checkAction() == false)
+                        {}
+
+                        //check which option the user chose
+                        switch(mainUI.getAction().toLowerCase())
+                        {
+                            case "slash":
+                                printToUI("\n" + this.playerCharacter.getName() + " uses slash on the " + this.enemyList.get(i).getName());
+                                this.playerCharacter.attack(this.enemyList.get(i));
                                 quitBool = true;
                                 break;
-                            }
-                            else if (soulEaterCounter > 0)
-                            {
-                                System.out.println("\nYou cannot use souleater yet... You may use it in " + soulEaterCounter + " turns.\n");
+
+                            case "souleater":
+                                if (soulEaterCounter == 0)
+                                {
+                                    this.playerCharacter.soulEater(this.enemyList.get(i));
+                                    //set the souleater cooldown to 5
+                                    soulEaterCounter = 5;
+                                    mainUI.updateSouleaterCooldown(soulEaterCounter);
+                                    printToUI("\nYou may use souleater in 5 turns\n");
+                                    quitBool = true;
+                                    break;
+                                }
+                                else if (soulEaterCounter > 0)
+                                {
+                                    printToUI("\nYou cannot use souleater yet... You may use it in " + soulEaterCounter + " turns.\n");
+                                    quitBool = true;
+                                    break;
+                                }    
+                            case "lacerate":
+                                if (lacerateCounter == 0)
+                                {
+                                    lacerateCounter = 3;
+                                    lacerateDamage = 5;
+                                    this.playerCharacter.lacerate(this.enemyList.get(i));
+                                    mainUI.updateLacerateCooldown(lacerateCounter);
+                                    System.out.println("You may use lacerate again in 3 turns.\n");
+                                    quitBool = true;
+                                    break;
+                                }
+                                else if(lacerateCounter > 0)
+                                {
+                                    System.out.println("You cannot use lacerate yet... You may use it in " + lacerateCounter + " turns.\n");
+                                    quitBool = true;
+                                    break;
+                                }
+                            case "potion":
+                                this.playerCharacter.usePotion();
                                 quitBool = true;
-                                break;
-                            }    
-                        case "lacerate":
-                            if (lacerateCounter == 0)
-                            {
-                                lacerateCounter = 3;
-                                lacerateDamage = 5;
-                                this.playerCharacter.lacerate(this.enemyList.get(i));
-                                System.out.println("You may use lacerate again in 3 turns.\n");
-                                quitBool = true;
-                                break;
-                            }
-                            else if(lacerateCounter > 0)
-                            {
-                                System.out.println("You cannot use lacerate yet... You may use it in " + lacerateCounter + " turns.\n");
-                                quitBool = true;
-                                break;
-                            }
-                        case "potion":
-                            this.playerCharacter.usePotion();
-                            quitBool = true;
-                            break;    
-                        case "quit":
-                            this.saveCharacterData();
-                            System.out.println("Quitting Game...");
-                            System.exit(0);    
-                        default:
-                            System.out.println("You did not enter a valid option, please try again.\n");
+                                break;    
+                            case "quit":
+                                this.saveCharacterData();
+                                printToUI("Quitting Game...");
+                                System.exit(0);    
+                            default:
+                                printToUI("You did not enter a valid option, please try again.\n");
+                        }
+                    }while(quitBool == false);
+
+                    if(soulEaterCounter > 0)
+                    {
+                        soulEaterCounter -= 1;
                     }
-                }while(quitBool == false);
-                
-                if(soulEaterCounter > 0)
-                {
-                    soulEaterCounter -= 1;
+
+                    if (lacerateCounter > 0 && lacerateDamage != 0)
+                    {
+                        printToUI("The enemy suffers 5 bleed damage.\n");
+                        enemyList.get(i).setHealthPoints(this.enemyList.get(i).getHealthPoints() - 5);
+                        lacerateCounter -= 1;
+                    }
+                    else if(lacerateCounter > 0 && lacerateDamage == 0)
+                    {
+                        lacerateCounter -= 1;
+                    }
+
+
+                    if (this.enemyList.get(i).getHealthPoints() <= 0)
+                    {
+                        //drop loot on enemy death
+                        this.enemyList.get(i).dropItem(this.playerCharacter);
+                        this.playerCharacter.updateLvl();
+                        System.out.println("\n");
+                        break;
+                    }
+                    else
+                    {
+                        //enemy attacks player
+                        System.out.println("The " +this.enemyList.get(i).getName() + " attacks " + this.playerCharacter.getName());
+                        this.enemyList.get(i).attack(this.playerCharacter);
+                    }   
                 }
-                
-                if (lacerateCounter > 0 && lacerateDamage != 0)
-                {
-                    System.out.println("The enemy suffers 5 bleed damage.\n");
-                    enemyList.get(i).setHealthPoints(this.enemyList.get(i).getHealthPoints() - 5);
-                    lacerateCounter -= 1;
-                }
-                else if(lacerateCounter > 0 && lacerateDamage == 0)
-                {
-                    lacerateCounter -= 1;
-                }
-                
-                
-                if (this.enemyList.get(i).getHealthPoints() <= 0)
-                {
-                    //drop loot on enemy death
-                    this.enemyList.get(i).dropItem(this.playerCharacter);
-                    this.playerCharacter.updateLvl();
-                    System.out.println("\n");
-                    break;
-                }
-                else
-                {
-                    //enemy attacks player
-                    System.out.println("The " +this.enemyList.get(i).getName() + " attacks " + this.playerCharacter.getName());
-                    this.enemyList.get(i).attack(this.playerCharacter);
-                }   
+
+                if (this.playerCharacter.getHealthPoints() <= 0)
+                    {
+                        System.out.println("Oh dear, you died! Try again next time.");
+                        System.out.println("Quitting game...");
+                        System.exit(0);
+                    }
+
             }
-            
-            if (this.playerCharacter.getHealthPoints() <= 0)
-                {
-                    System.out.println("Oh dear, you died! Try again next time.");
-                    System.out.println("Quitting game...");
-                    System.exit(0);
-                }
-            
         }
-        
         System.out.println("The onslaught of monsters seems to be over for now. Seeing a large wooden door ahead, you push it open and continue into the dark.");
     }
 
@@ -258,8 +266,12 @@ public class GameController
         
         while(this.playerCharacter.getHealthPoints() > 0 && mimic.getHealthPoints() > 0)
             {
-                System.out.println(this.playerCharacter.getName() + " HP: " + this.playerCharacter.getHealthPoints() + "                " + mimic.getName() + " HP: " + mimic.getHealthPoints());
-                System.out.println("Options:    Slash   |   Souleater   |   Lacerate   |   potion x" + this.playerCharacter.getInventory().size() + " |   Quit");
+                mainUI.updatePotion(this.playerCharacter.getPotionCount());
+                mainUI.updateSouleaterCooldown(soulEaterCounter);
+                mainUI.updateLacerateCooldown(lacerateCounter);
+                
+                printToUI(this.playerCharacter.getName() + " HP: " + this.playerCharacter.getHealthPoints() + "                " + mimic.getName() + " HP: " + mimic.getHealthPoints());
+                printToUI("Options:    Slash   |   Souleater   |   Lacerate   |   potion x" + this.playerCharacter.getInventory().size() + " |   Quit");
                 boolean quitBool;
                 
                 do
@@ -271,7 +283,7 @@ public class GameController
                     switch(userInput.toLowerCase())
                     {
                         case "slash":
-                            System.out.println("\n" + this.playerCharacter.getName() + " uses slash on the " + mimic.getName());
+                            printToUI("\n" + this.playerCharacter.getName() + " uses slash on the " + mimic.getName());
                             this.playerCharacter.attack(mimic);
                             quitBool = true;
                             break;
@@ -282,13 +294,14 @@ public class GameController
                                 this.playerCharacter.soulEater(mimic);
                                 //set the souleater cooldown to 5
                                 soulEaterCounter = 5;
-                                System.out.println("\nYou may use souleater in 5 turns\n");
+                                mainUI.updateSouleaterCooldown(soulEaterCounter);
+                                printToUI("\nYou may use souleater in 5 turns\n");
                                 quitBool = true;
                                 break;
                             }
                             else if (soulEaterCounter > 0)
                             {
-                                System.out.println("\nYou cannot use souleater yet... You may use it in " + soulEaterCounter + " turns.\n");
+                                printToUI("\nYou cannot use souleater yet... You may use it in " + soulEaterCounter + " turns.\n");
                                 quitBool = true;
                                 break;
                             }    
@@ -298,13 +311,14 @@ public class GameController
                                 lacerateCounter = 3;
                                 lacerateDamage = 5;
                                 this.playerCharacter.lacerate(mimic);
-                                System.out.println("You may use lacerate again in 3 turns.\n");
+                                mainUI.updateLacerateCooldown(lacerateCounter);
+                                printToUI("You may use lacerate again in 3 turns.\n");
                                 quitBool = true;
                                 break;
                             }
                             else if(lacerateCounter > 0)
                             {
-                                System.out.println("You cannot use lacerate yet... You may use it in " + lacerateCounter + " turns.\n");
+                                printToUI("You cannot use lacerate yet... You may use it in " + lacerateCounter + " turns.\n");
                                 quitBool = true;
                                 break;
                             }
@@ -314,10 +328,10 @@ public class GameController
                             break;    
                         case "quit":
                             this.saveCharacterData();
-                            System.out.println("Quitting Game...");
+                            printToUI("Quitting Game...");
                             System.exit(0);    
                         default:
-                            System.out.println("You did not enter a valid option, please try again.\n");
+                            printToUI("You did not enter a valid option, please try again.\n");
                     }
                 }while(quitBool == false);
                 
@@ -328,7 +342,7 @@ public class GameController
                 
                 if (lacerateCounter > 0 && lacerateDamage != 0)
                 {
-                    System.out.println("The enemy suffers 5 bleed damage.\n");
+                    printToUI("The enemy suffers 5 bleed damage.\n");
                     mimic.setHealthPoints(mimic.getHealthPoints() - 5);
                     lacerateCounter -= 1;
                 }
@@ -349,15 +363,15 @@ public class GameController
                 else
                 {
                     //enemy attacks player
-                    System.out.println("The " + mimic.getName() + " attacks " + this.playerCharacter.getName());
+                    printToUI("The " + mimic.getName() + " attacks " + this.playerCharacter.getName());
                     mimic.attack(this.playerCharacter);
                 }   
             }
             
             if (this.playerCharacter.getHealthPoints() <= 0)
                 {
-                    System.out.println("Oh dear, you died! Try again next time.");
-                    System.out.println("Quitting game...");
+                    printToUI("Oh dear, you died! Try again next time.");
+                    printToUI("Quitting game...");
                     System.exit(0);
                 }
             

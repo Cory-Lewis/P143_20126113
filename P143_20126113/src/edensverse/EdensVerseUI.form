@@ -48,7 +48,7 @@
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="330" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="308" max="-2" attributes="0"/>
                       <Component id="label1" min="-2" pref="397" max="-2" attributes="0"/>
                   </Group>
               </Group>

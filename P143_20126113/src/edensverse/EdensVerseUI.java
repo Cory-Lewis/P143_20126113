@@ -17,8 +17,9 @@ public class EdensVerseUI extends javax.swing.JFrame {
         initComponents();
         actionString = "";
         actionPerformed = false;
-        StringBuffer tempStr = new StringBuffer();
-        outputStr = "";
+        potionCount = 0;
+        lacerateCooldown = 0;
+        souleaterCooldown = 0;
     }
 
     /**
@@ -146,7 +147,7 @@ public class EdensVerseUI extends javax.swing.JFrame {
                                 .addGap(100, 100, 100)
                                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(330, 330, 330)
+                        .addGap(308, 308, 308)
                         .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(249, Short.MAX_VALUE))
         );
@@ -177,8 +178,8 @@ public class EdensVerseUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.actionPerformed = true;
         this.actionString = "slash";
+        this.actionPerformed = true;
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -199,6 +200,24 @@ public class EdensVerseUI extends javax.swing.JFrame {
     public boolean checkAction()
     {
         return actionPerformed;
+    }
+    
+    public void updatePotion(int potionCount)
+    {
+        this.potionCount = potionCount;
+        jButton4.setText("Potion x " + potionCount);
+    }
+    
+    public void updateSouleaterCooldown(int cooldown)
+    {
+        this.souleaterCooldown = cooldown;
+        jLabel1.setText("Cooldown: " + this.souleaterCooldown);
+    }
+    
+    public void updateLacerateCooldown(int cooldown)
+    {
+        this.lacerateCooldown = cooldown;
+        jLabel2.setText("Cooldown: " + this.lacerateCooldown);
     }
     
     public String getAction()
@@ -249,8 +268,9 @@ public class EdensVerseUI extends javax.swing.JFrame {
 
     private String actionString;
     private boolean actionPerformed;
-    StringBuilder tempStr;
-    String outputStr;
+    private int potionCount;
+    private int lacerateCooldown;
+    private int souleaterCooldown;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

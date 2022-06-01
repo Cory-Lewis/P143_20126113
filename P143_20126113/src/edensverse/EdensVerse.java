@@ -41,7 +41,7 @@ public class EdensVerse {
             
             charName = scan.next();
             
-            Adventurer playerChar = new Adventurer(charName, 60, 30);
+            Adventurer playerChar = new Adventurer(charName, 60, 30, 6);
             gameController.setPlayerCharacter(playerChar);
             gameController.saveCharacterData();
         }
@@ -62,6 +62,9 @@ public class EdensVerse {
                 if(userInput.equalsIgnoreCase("y"))
                 {
                     gameController.loadCharacterData();
+                    gameController.getPlayerCharacter().setController(gameController);
+                    gameController.printToUI("You come back to your senses, the fight isn't over yet... The next challenger approaches...");
+                    
                     break;
                 }
                 else if(userInput.equalsIgnoreCase("n"))
@@ -70,9 +73,23 @@ public class EdensVerse {
                     
                     charName = scan.nextLine();
             
-                    Adventurer playerChar = new Adventurer(charName, 60, 30);
+                    Adventurer playerChar = new Adventurer(charName, 60, 30, 6);
                     gameController.setPlayerCharacter(playerChar);
+                    playerChar.setController(gameController);
                     gameController.saveCharacterData();
+                    
+                    gameController.printToUI(gameController.readFile("./src/edensverse/entry_pt1.txt"));
+                    gameController.printToUI("Press enter to continue...");
+                    scan.nextLine();
+        
+                    gameController.printToUI(gameController.getPlayerCharacter().getName() + gameController.readFile("./src/edensverse/entry_pt2.txt"));
+                    gameController.printToUI("Press enter to continue...\n");
+                    scan.nextLine();
+        
+                    gameController.printToUI(gameController.readFile("./src/edensverse/entry_pt3.txt"));
+                    gameController.printToUI("Press enter to continue...\n");
+                    scan.nextLine();
+                    
                     break;
                 }
                 else
@@ -83,18 +100,6 @@ public class EdensVerse {
             while(true);
         }
         
-        gameController.printToUI(gameController.readFile("./src/edensverse/entry_pt1.txt"));
-        gameController.printToUI("Press enter to continue...");
-        scan.nextLine();
-        
-        gameController.printToUI(gameController.getPlayerCharacter().getName() + gameController.readFile("./src/edensverse/entry_pt2.txt"));
-        gameController.printToUI("Press enter to continue...\n");
-        scan.nextLine();
-        
-        gameController.printToUI(gameController.readFile("./src/edensverse/entry_pt3.txt"));
-        gameController.printToUI("Press enter to continue...\n");
-        scan.nextLine();
-        
         gameController.printToUI("*System Notice*\nSkill Info:");
         gameController.printToUI("Slash - a basic attack with no cooldown");
         gameController.printToUI("Souleater - an attack that drains the HP of you enemies and gives it to you. 5 turn cooldown");
@@ -102,7 +107,7 @@ public class EdensVerse {
         gameController.printToUI("Potion - Uses a potion that restores 1/3rd of your max HP");
         gameController.printToUI("Quit - Saves your character info and quits the game\n");
         
-        gameController.createMonsters(4);
+        gameController.createMonsters();
         gameController.battle(scan);
         
         AdventureGear bossDrop = new AdventureGear("Adamantite", "A hunk of green metal that can be used to improve a weapon", "weapon", 10, 15);

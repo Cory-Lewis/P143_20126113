@@ -36,27 +36,30 @@ public class Enemy extends Eukrasian
     }
     
     //use random number generation to determine what loot the user gets once they kill a monster
-    protected void dropItem(Adventurer adventurer)
+    protected String dropItem(Adventurer adventurer)
     {
+        String itemString = "";
         Random rand = new Random();
         int itemRoll = rand.nextInt(20) + 1;
         HealthPotion potion = new HealthPotion();
         String userInput = null;
         boolean exitBool = false;
         
-        System.out.println("You have slayed the " + this.getName() + "! You gain " + this.xpRewarded + " xp.");
+        itemString += "You have slayed the " + this.getName() + "! You gain " + this.xpRewarded + " xp.\n";
         
         adventurer.setXp(adventurer.getXp() + this.getXpRewarded());
         
         if (itemRoll > 1 && itemRoll <= 9)
         {
-            System.out.println("You recieved one potion for your efforts in battle.");
+            itemString += "You recieved one potion for your efforts in battle.\n";
             adventurer.addToInventory(potion);
         }
         else
         {
-            System.out.println("Fortune does not smile upon you today, you recieve nothing...");
+            itemString += "Fortune does not smile upon you today, you recieve nothing...\n";
         }
+        
+        return itemString;
     }
     
 }

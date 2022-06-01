@@ -231,6 +231,11 @@ public class EdensVerseUI extends javax.swing.JFrame {
         this.textArea1.append(str + "\n");
     }
     
+    public void statPrint(String statString)
+    {
+        this.textArea2.setText(statString);
+    }
+    
     /**
      * @param args the command line arguments
      */

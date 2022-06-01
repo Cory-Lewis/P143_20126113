@@ -25,37 +25,29 @@ public class BossEnemy extends Enemy
     }
 
     @Override
-    protected void dropItem(Adventurer adventurer)
+    protected String dropItem(Adventurer adventurer)
     {
-        System.out.println("You prevailed! For your efforts, you are rewarded with an " + this.itemDrop);
-        System.out.println("You absorb the " + this.itemDrop + ". Your power grows...");
+        String itemString = "";
+        itemString += "You prevailed! For your efforts, you are rewarded with an " + this.itemDrop + "\n";
+        itemString += "You absorb the " + this.itemDrop + ". Your power grows...\n";
         
         
         if (null == this.itemDrop.getGearType())
         {
-            System.out.println("There was some kind of error in equipping the item...");
+            itemString += "There was some kind of error in equipping the item...\n";
         }
         else //check whether item is a weapon or armor and use the correct equip function
         switch (this.itemDrop.getGearType()) {
             case "weapon":
-                adventurer.upgradeWeapon(itemDrop);
+                itemString += adventurer.upgradeWeapon(itemDrop) + "\n";
                 break;
             case "armor":
-                adventurer.upgradeArmor(itemDrop);
+                itemString += adventurer.upgradeArmor(itemDrop) + "\n";
                 break;
             default:
-                System.out.println("There was some kind of error in equipping the item...");
+                itemString += "There was some kind of error in equipping the item...\n";
                 break;
         }
-   
+        return itemString;
     }
-    
-    //reset health of boss to half and increase it's stats slightly
-    public void enrage()
-    {
-        this.setHealthPoints(this.getMaxHealth() / 2);
-        this.setStrength(this.getStrength() +10);
-    }
-
-    
 }

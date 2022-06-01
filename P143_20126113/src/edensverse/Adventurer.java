@@ -20,7 +20,6 @@ public class Adventurer extends Eukrasian implements Serializable
     private AdventureGear currentArmor;
     private int damageBuff;
     private int enemyCount;
-    private GameController controller;
     
     private ArrayList<HealthPotion> inventory = new ArrayList<>();
     
@@ -79,58 +78,61 @@ public class Adventurer extends Eukrasian implements Serializable
         this.xp = xp;
     }
     
-    public void updateLvl()
+    public String updateLvl()
     {
+        String lvlString = "";
+        
         if (this.xp <= 10 && this.characterLvl != 1)
         {
-            controller.printToUI("You gained a lvl! You are now lvl 1.");
+            lvlString = "You gained a lvl! You are now lvl 1.\n";
             this.characterLvl = 1;
             this.setStrength(this.getStrength() +5);
             this.maxHealth +=5;
         }
         else if (this.xp > 10 && this.xp <= 20&& this.characterLvl != 2)
         {
-            controller.printToUI("You gained a lvl! You are now lvl 2.");
+            lvlString = "You gained a lvl! You are now lvl 2.\n";
             this.characterLvl = 2;
             this.setStrength(this.getStrength() +5);
             this.maxHealth +=5;
         }
         else if (this.xp > 20 && this.xp <= 40&& this.characterLvl != 3)
         {
-            controller.printToUI("You gained a lvl! You are now lvl 3.");
+            lvlString = "You gained a lvl! You are now lvl 3.\n";
             this.characterLvl = 3;
             this.setStrength(this.getStrength() +5);
             this.maxHealth +=5;
         }
         else if (this.xp > 40 && this.xp <= 60&& this.characterLvl != 4)
         {
-            controller.printToUI("You gained a lvl! You are now lvl 4.");
+            lvlString = "You gained a lvl! You are now lvl 4.\n";
             this.characterLvl = 4;
             this.setStrength(this.getStrength() +5);
             this.maxHealth +=5;
         }
         else if (this.xp > 60 && this.xp <= 80&& this.characterLvl != 5)
         {
-            controller.printToUI("You gained a lvl! You are now lvl 5.");
+            lvlString = "You gained a lvl! You are now lvl 5.\n";
             this.characterLvl = 5;
             this.setStrength(this.getStrength() +5);
             this.maxHealth +=5;
         }
         else if (this.xp > 80 && this.xp <= 100&& this.characterLvl != 6)
         {
-            controller.printToUI("You gained a lvl! You are now lvl 6.");
+            lvlString = "You gained a lvl! You are now lvl 6.\n";
             this.characterLvl = 6;
             this.setStrength(this.getStrength() +5);
             this.maxHealth +=5;
         }
         else if (this.xp > 100&& this.characterLvl != 7)
         {
-            controller.printToUI("You gained a lvl! You are now lvl 7.");
+            lvlString = "You gained a lvl! You are now lvl 7.\n";
             this.characterLvl = 7;
             this.setStrength(this.getStrength() +5);
             this.maxHealth +=5;
         }
         
+        return lvlString;
     }
     
     /**
@@ -148,25 +150,27 @@ public class Adventurer extends Eukrasian implements Serializable
     }
     
     //add any bonus stats the equipment had to the user
-    public void upgradeWeapon(AdventureGear weaponUpgrade)
+    public String upgradeWeapon(AdventureGear weaponUpgrade)
     {
         AdventureGear oldWeapon = new AdventureGear(this.currentWeapon.getName(), " ", "weapon", 0, 0);
         this.currentWeapon.setUpgradeLvl(this.currentWeapon.getUpgradeLvl() + 1);
-        controller.printToUI("Your " + oldWeapon + " was upgraded to " + this.currentWeapon);
         
         this.setHealthPoints(this.getHealthPoints() + weaponUpgrade.getHealthBoost());
         this.setStrength(this.getStrength() + weaponUpgrade.getStrengthBoost());
+        
+        return "Your " + oldWeapon + " was upgraded to " + this.currentWeapon;
     }
     
     //add any bonus stats the equipment had to the user
-    public void upgradeArmor(AdventureGear armorUpgrade)
+    public String upgradeArmor(AdventureGear armorUpgrade)
     {
         AdventureGear oldArmor = new AdventureGear(this.currentArmor.getName(), " ", "armor", 0, 0);
         this.currentArmor.setUpgradeLvl(this.currentArmor.getUpgradeLvl() + 1);
-        controller.printToUI("Your " + oldArmor + " was upgraded to " + this.currentArmor);
         
         this.setHealthPoints(this.getHealthPoints() + armorUpgrade.getHealthBoost());
         this.setStrength(this.getStrength() + armorUpgrade.getStrengthBoost());
+        
+        return "Your " + oldArmor + " was upgraded to " + this.currentArmor;
     }
     
     public void addToInventory(HealthPotion drop)
@@ -181,29 +185,31 @@ public class Adventurer extends Eukrasian implements Serializable
     
     public String toString()
     {
-        String charSave = this.getName() + "\n";
-        charSave += this.getHealthPoints() + "\n";
-        charSave += this.getMaxHealth() + "\n";
-        charSave += this.getStrength() + "\n";
-        charSave += this.getCharacterLvl() + "\n";
-        charSave += this.getXp() + "\n";
-        charSave += this.getCurrentWeapon() + "\n";
-        charSave += this.getCurrentArmor() + "\n";
+        String charStats = this.getName() + "\n";
+        charStats +="HP:" + this.getHealthPoints() + "\n";
+        charStats += "Lvl: " + this.getCharacterLvl() + "\n";
+        charStats += "Xp: " + this.getXp() + "\n";
+        charStats += "Str: " + this.getStrength() + "\n";
+        charStats += this.getCurrentWeapon().getName() + "\n";
                 
-        return  charSave;
+        return  charStats;
     }
 
-    public void usePotion()
+    public String usePotion()
     {
+        String potionString = "";
+        
         if (this.inventory.size() >= 1)
         {
-            this.inventory.get(0).activatePotion(this);
-            this.removeFromInventory(); 
+            potionString = this.inventory.get(0).activatePotion(this);
+            this.removeFromInventory();
         }
         else
         {
-            controller.printToUI("\nUh oh... You dont seem to have any potions!\n");
+            potionString = "\nUh oh... You dont seem to have any potions!\n";
         }
+        
+        return potionString;
     }
     
     public int getPotionCount()
@@ -219,11 +225,6 @@ public class Adventurer extends Eukrasian implements Serializable
     public void enemyDefeated()
     {
         this.enemyCount -= 1;
-    }
-
-    public void setController(GameController controller)
-    {
-        this.controller = controller;
     }
     
 

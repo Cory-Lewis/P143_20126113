@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -73,6 +74,11 @@ public class GameController
         this.mainUI.uiPrint(str);
     }
     
+    public void updateStatScreen()
+    {
+        this.mainUI.statPrint(this.playerCharacter.toString());
+    }
+    
     public String readFile(String filePath) throws FileNotFoundException, IOException
     {
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -99,7 +105,7 @@ public class GameController
         Random rand = new Random();
         int monsterCode = 0;
         
-        if(this.playerCharacter.getEnemyCount() == 0)
+        if(this.playerCharacter.getEnemyCount() != 0)
         {
             for(int i = 0; i < this.playerCharacter.getEnemyCount() +1; i++)
             {
@@ -123,7 +129,7 @@ public class GameController
     
     //iterate through the list of monsters and fight, terminate the program if the user dies.
     @SuppressWarnings("empty-statement")
-    public void battle(Scanner scan) throws IOException
+    public void battle() throws IOException
     {
         String userInput;
         //cooldowns and damage for hard-hitting moves
@@ -140,15 +146,19 @@ public class GameController
 
                 while(this.playerCharacter.getHealthPoints() > 0 && this.enemyList.get(i).getHealthPoints() > 0)
                 {
+                    mainUI.updateSouleaterCooldown(soulEaterCounter);
+                    mainUI.updateLacerateCooldown(lacerateCounter);
+                    
                     printToUI(this.playerCharacter.getName() + " HP: " + this.playerCharacter.getHealthPoints() + "                " + this.enemyList.get(i).getName() + " HP: " + this.enemyList.get(i).getHealthPoints());
-                    printToUI("Options:    Slash   |   Souleater   |   Lacerate   |   potion x" + this.playerCharacter.getInventory().size() + " |   Quit");
+                    printToUI("Options:    Slash   |   Souleater   |   Lacerate   |   potion x" + this.playerCharacter.getInventory().size() + " |   Quit\n");
                     boolean quitBool;
 
                     do
                     {
                         quitBool = false;
                         mainUI.updatePotion(this.playerCharacter.getPotionCount());
-
+                        updateStatScreen();
+                        
                         while(mainUI.checkAction() == false)
                         {}
 
@@ -157,14 +167,14 @@ public class GameController
                         {
                             case "slash":
                                 printToUI("\n" + this.playerCharacter.getName() + " uses slash on the " + this.enemyList.get(i).getName());
-                                this.playerCharacter.attack(this.enemyList.get(i));
+                                printToUI(this.playerCharacter.attack(this.enemyList.get(i)));
                                 quitBool = true;
                                 break;
 
                             case "souleater":
                                 if (soulEaterCounter == 0)
                                 {
-                                    this.playerCharacter.soulEater(this.enemyList.get(i));
+                                    printToUI(this.playerCharacter.soulEater(this.enemyList.get(i)));
                                     //set the souleater cooldown to 5
                                     soulEaterCounter = 5;
                                     mainUI.updateSouleaterCooldown(soulEaterCounter);
@@ -183,9 +193,9 @@ public class GameController
                                 {
                                     lacerateCounter = 3;
                                     lacerateDamage = 5;
-                                    this.playerCharacter.lacerate(this.enemyList.get(i));
+                                    printToUI(this.playerCharacter.lacerate(this.enemyList.get(i)));
                                     mainUI.updateLacerateCooldown(lacerateCounter);
-                                    System.out.println("You may use lacerate again in 3 turns.\n");
+                                    printToUI("You may use lacerate again in 3 turns.\n");
                                     quitBool = true;
                                     break;
                                 }
@@ -196,7 +206,7 @@ public class GameController
                                     break;
                                 }
                             case "potion":
-                                this.playerCharacter.usePotion();
+                                printToUI(this.playerCharacter.usePotion());
                                 quitBool = true;
                                 break;    
                             case "quit":
@@ -228,35 +238,34 @@ public class GameController
                     if (this.enemyList.get(i).getHealthPoints() <= 0)
                     {
                         //drop loot on enemy death
-                        this.enemyList.get(i).dropItem(this.playerCharacter);
-                        this.playerCharacter.updateLvl();
+                        printToUI(this.enemyList.get(i).dropItem(this.playerCharacter));
+                        printToUI(this.playerCharacter.updateLvl());
                         System.out.println("\n");
                         break;
                     }
                     else
                     {
                         //enemy attacks player
-                        System.out.println("The " +this.enemyList.get(i).getName() + " attacks " + this.playerCharacter.getName());
-                        this.enemyList.get(i).attack(this.playerCharacter);
+                        printToUI("The " +this.enemyList.get(i).getName() + " attacks " + this.playerCharacter.getName());
+                        printToUI(this.enemyList.get(i).attack(this.playerCharacter));
                     }   
                 }
 
                 if (this.playerCharacter.getHealthPoints() <= 0)
                     {
-                        System.out.println("Oh dear, you died! Try again next time.");
-                        System.out.println("Quitting game...");
+                        JOptionPane.showMessageDialog(null, "Oh dear, you died! Try again next time.\nQuitting game...");
                         System.exit(0);
                     }
 
             }
         }
-        System.out.println("The onslaught of monsters seems to be over for now. Seeing a large wooden door ahead, you push it open and continue into the dark.");
+        JOptionPane.showMessageDialog(null, "The onslaught of monsters seems to be over for now. Seeing a large wooden door ahead, you push it open and continue into the dark.\n");
     }
 
     
-    public void bossBattle(BossEnemy mimic, Scanner scan) throws IOException
+    public void bossBattle(BossEnemy mimic) throws IOException
     {
-        System.out.println("From the shadows you final trial appears! This face looks familiar... Because it's yours!\n");
+        JOptionPane.showMessageDialog(null, "From the shadows your final trial appears! This face looks familiar... Because it's yours!\n");
         
         String userInput;
         //cooldowns and damage for hard-hitting moves
@@ -269,6 +278,7 @@ public class GameController
                 mainUI.updatePotion(this.playerCharacter.getPotionCount());
                 mainUI.updateSouleaterCooldown(soulEaterCounter);
                 mainUI.updateLacerateCooldown(lacerateCounter);
+                updateStatScreen();
                 
                 printToUI(this.playerCharacter.getName() + " HP: " + this.playerCharacter.getHealthPoints() + "                " + mimic.getName() + " HP: " + mimic.getHealthPoints());
                 printToUI("Options:    Slash   |   Souleater   |   Lacerate   |   potion x" + this.playerCharacter.getInventory().size() + " |   Quit");
@@ -276,22 +286,23 @@ public class GameController
                 
                 do
                 {
-                    quitBool = false;
-                    userInput = scan.nextLine();
-                    
-                    //check which option the user chose
-                    switch(userInput.toLowerCase())
-                    {
+                        quitBool = false;
+                        while(mainUI.checkAction() == false)
+                        {}
+
+                        //check which option the user chose
+                        switch(mainUI.getAction().toLowerCase())
+                        {
                         case "slash":
                             printToUI("\n" + this.playerCharacter.getName() + " uses slash on the " + mimic.getName());
-                            this.playerCharacter.attack(mimic);
+                            printToUI(this.playerCharacter.attack(mimic));
                             quitBool = true;
                             break;
                         
                         case "souleater":
                             if (soulEaterCounter == 0)
                             {
-                                this.playerCharacter.soulEater(mimic);
+                                printToUI(this.playerCharacter.soulEater(mimic));
                                 //set the souleater cooldown to 5
                                 soulEaterCounter = 5;
                                 mainUI.updateSouleaterCooldown(soulEaterCounter);
@@ -310,7 +321,7 @@ public class GameController
                             {
                                 lacerateCounter = 3;
                                 lacerateDamage = 5;
-                                this.playerCharacter.lacerate(mimic);
+                                printToUI(this.playerCharacter.lacerate(mimic));
                                 mainUI.updateLacerateCooldown(lacerateCounter);
                                 printToUI("You may use lacerate again in 3 turns.\n");
                                 quitBool = true;
@@ -323,7 +334,7 @@ public class GameController
                                 break;
                             }
                         case "potion":
-                            this.playerCharacter.usePotion();
+                            printToUI(this.playerCharacter.usePotion());
                             quitBool = true;
                             break;    
                         case "quit":
@@ -356,22 +367,20 @@ public class GameController
                 {
                     //drop loot on enemy death
                     mimic.dropItem(this.playerCharacter);
-                    this.playerCharacter.updateLvl();
-                    System.out.println("\n");
+                    printToUI(this.playerCharacter.updateLvl());
                     break;
                 }
                 else
                 {
                     //enemy attacks player
                     printToUI("The " + mimic.getName() + " attacks " + this.playerCharacter.getName());
-                    mimic.attack(this.playerCharacter);
+                    printToUI(mimic.attack(this.playerCharacter));
                 }   
             }
             
             if (this.playerCharacter.getHealthPoints() <= 0)
                 {
-                    printToUI("Oh dear, you died! Try again next time.");
-                    printToUI("Quitting game...");
+                    JOptionPane.showMessageDialog(null, "Oh dear, you died! Try again next time.\nQuitting game...");
                     System.exit(0);
                 }
             

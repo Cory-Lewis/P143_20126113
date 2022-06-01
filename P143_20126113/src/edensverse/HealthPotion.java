@@ -19,9 +19,10 @@ public class HealthPotion extends Item implements Serializable
     }
     
     //restore the hp of the adventurer and then remove the potion from the inventory
-    public void activatePotion(Adventurer adventurer)
+    public String activatePotion(Adventurer adventurer)
     {
-        System.out.println("You use a potion. It restores " + (adventurer.getMaxHealth() / 3) + " HP.");
         adventurer.setHealthPoints(adventurer.getHealthPoints() + (adventurer.getMaxHealth() / 3));
+        
+        return "You use a potion. It restores " + (adventurer.getMaxHealth() / 3) + " HP.";
     }
 }

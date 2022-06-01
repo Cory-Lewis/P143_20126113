@@ -92,27 +92,31 @@ public class Eukrasian  implements Serializable  {
     }
     
     //use the random number generator to calculate damage
-    public void attack(Eukrasian enemy)
+    public String attack(Eukrasian enemy)
     {
+        String attackString = "";
         int damage = this.calculateDamage();
         
         //if the attacker's dmg is higer than 0, the attack is successful
         if(damage > 0)
         {
-            System.out.println(this.getName() + "'s attack is successful! " + damage + " dmg is dealt.\n");
+            attackString += this.getName() + "'s attack is successful! " + damage + " dmg is dealt.\n";
             enemy.setHealthPoints(enemy.getHealthPoints() - damage);
         }       
         else        
         {
-            System.out.println(this.getName() + "'s strength fails them! No dmg is dealt.\n");
+            attackString += this.getName() + "'s strength fails them! No dmg is dealt.\n";
         }
+        
+        return attackString;
     }
     
-    public void soulEater(Eukrasian enemy)
+    public String soulEater(Eukrasian enemy)
     {
+        String soulEaterString = "";
         int damage = this.calculateDamage() + 1;
         
-        System.out.println("\nsouleater does " + damage + " dmg. " + this.name + " gains " + damage + " HP. ");
+        soulEaterString = "\nsouleater does " + damage + " dmg. " + this.name + " gains " + damage + " HP. ";
         enemy.setHealthPoints(enemy.getHealthPoints() - damage);
         this.setHealthPoints(this.getHealthPoints() + damage);
         
@@ -120,13 +124,18 @@ public class Eukrasian  implements Serializable  {
         {
             this.setHealthPoints(this.getMaxHealth());
         }
+        
+        return soulEaterString;
     }
     
-    public void lacerate(Eukrasian enemy)
+    public String lacerate(Eukrasian enemy)
     {
+        String lacerateString = "";
         int damage = (this.calculateDamage() / 2)+ 7;
         
-        System.out.println("\nLacerate does " + damage + " dmg. " + enemy.getName() + " is afflicted with bleed.");
+        lacerateString += "\nLacerate does " + damage + " dmg. " + enemy.getName() + " is afflicted with bleed.";
         enemy.setHealthPoints(enemy.getHealthPoints() - damage);
+        
+        return lacerateString;
     }
 }

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -36,10 +37,9 @@ public class EdensVerse {
         {
             String charName;
             
-            System.out.println("No character save was found. Creating new save...");
-            System.out.println("Please enter a name for your character: ");
+            JOptionPane.showMessageDialog(null, "No character save was found. Creating new save...");
             
-            charName = scan.next();
+            charName = (String)JOptionPane.showInputDialog(null, "Please enter a name for the new character", "Naming your Character", JOptionPane.PLAIN_MESSAGE, null, null, null);
             
             Adventurer playerChar = new Adventurer(charName, 60, 30, 6);
             gameController.setPlayerCharacter(playerChar);
@@ -49,55 +49,30 @@ public class EdensVerse {
         {
             String userInput;
             String charName;
-                    
-            System.out.println("Character save data found. Would you like to load this character? (y/n)");
-            System.out.println("*Note*: declining to load your character will create a new save and overwrite your past save.");
             
-            
-            do
-            {
-                userInput = scan.next();
-                scan.nextLine();
+            int n = JOptionPane.showConfirmDialog(null, "Character save data found. Would you like to load this character? (y/n)\n"
+                    + "*Note*: declining to load your character will create a new save and overwrite your past save.", "Load Character", JOptionPane.YES_NO_OPTION);
                 
-                if(userInput.equalsIgnoreCase("y"))
-                {
-                    gameController.loadCharacterData();
-                    gameController.getPlayerCharacter().setController(gameController);
-                    gameController.printToUI("You come back to your senses, the fight isn't over yet... The next challenger approaches...");
-                    
-                    break;
-                }
-                else if(userInput.equalsIgnoreCase("n"))
-                {
-                    System.out.println("Please enter a name for the new character");
-                    
-                    charName = scan.nextLine();
-            
-                    Adventurer playerChar = new Adventurer(charName, 60, 30, 6);
-                    gameController.setPlayerCharacter(playerChar);
-                    playerChar.setController(gameController);
-                    gameController.saveCharacterData();
-                    
-                    gameController.printToUI(gameController.readFile("./src/edensverse/entry_pt1.txt"));
-                    gameController.printToUI("Press enter to continue...");
-                    scan.nextLine();
-        
-                    gameController.printToUI(gameController.getPlayerCharacter().getName() + gameController.readFile("./src/edensverse/entry_pt2.txt"));
-                    gameController.printToUI("Press enter to continue...\n");
-                    scan.nextLine();
-        
-                    gameController.printToUI(gameController.readFile("./src/edensverse/entry_pt3.txt"));
-                    gameController.printToUI("Press enter to continue...\n");
-                    scan.nextLine();
-                    
-                    break;
-                }
-                else
-                {
-                    System.out.println("Incorrect input detected. Please answer with \"y\" or \"n\".");
-                }
+            if(n == 0)
+            {
+                gameController.loadCharacterData();
+                gameController.printToUI("You come back to your senses, the fight isn't over yet... The next challenger approaches...");
             }
-            while(true);
+            else if(n == 1)
+            {
+                charName = (String)JOptionPane.showInputDialog(null, "Please enter a name for the new character", "Naming your Character", JOptionPane.PLAIN_MESSAGE, null, null, null);
+
+                Adventurer playerChar = new Adventurer(charName, 60, 30, 6);
+                gameController.setPlayerCharacter(playerChar);
+                gameController.saveCharacterData();
+                
+                JOptionPane.showMessageDialog(null, gameController.readFile("./src/edensverse/entry_pt1.txt") + "\nPress ok to continue...\n");
+
+                JOptionPane.showMessageDialog(null, gameController.getPlayerCharacter().getName() + gameController.readFile("./src/edensverse/entry_pt2.txt") + "\nPress ok to continue...\n");
+
+                JOptionPane.showMessageDialog(null, gameController.readFile("./src/edensverse/entry_pt3.txt") + "\nPress ok to continue...\n");
+
+            }
         }
         
         gameController.printToUI("*System Notice*\nSkill Info:");
@@ -108,20 +83,18 @@ public class EdensVerse {
         gameController.printToUI("Quit - Saves your character info and quits the game\n");
         
         gameController.createMonsters();
-        gameController.battle(scan);
+        gameController.battle();
         
         AdventureGear bossDrop = new AdventureGear("Adamantite", "A hunk of green metal that can be used to improve a weapon", "weapon", 10, 15);
         BossEnemy mimic = new BossEnemy("Shadow Self", gameController.getPlayerCharacter().getMaxHealth(), gameController.getPlayerCharacter().getStrength() - 18, 50, bossDrop);
         
-        gameController.bossBattle(mimic, scan);
+        gameController.bossBattle(mimic);
         
-        System.out.println("You emerge from your trial victorious. You find a ladder to the surface behind where your shadow self was.");
-        System.out.println("You climb the ladder, greeted by blinding daylight. Freedom at last");
-        System.out.println("To be continued...\n");
+        JOptionPane.showMessageDialog(null, "You emerge from your trial victorious. You find a ladder to the surface behind where your shadow self was.\n"
+                + "You climb the ladder, greeted by blinding daylight. Freedom at last"
+                + "To be continued...\n" + "Thanks for playing the Eden's Verse Demo!\nRe-launch the game to either continue your adventure or start anew!");
         
         gameController.saveCharacterData();
-        
-        System.out.println("Thanks for playing the Eden's Verse Demo!");
     }
     
 }
